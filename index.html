@@ -306,6 +306,31 @@ button{font-family:var(--font-body); cursor:pointer;}
 .video-play-btn:hover{transform:translate(-50%,-50%) scale(1.1);}
 .video-play-btn.hidden{opacity:0; pointer-events:none;}
 
+/* Video controls bar */
+.video-controls{
+  position:absolute; bottom:0; left:0; right:0; z-index:5;
+  display:flex; align-items:center; gap:8px; padding:10px 12px;
+  background:linear-gradient(0deg, rgba(0,0,0,0.7), transparent);
+  opacity:0; transition:opacity 0.3s ease;
+}
+.video-frame:hover .video-controls{opacity:1;}
+.video-controls.show{opacity:1;}
+.vc-btn{
+  background:none; border:none; color:#fff; font-size:16px; cursor:pointer;
+  width:32px; height:32px; display:flex; align-items:center; justify-content:center;
+  border-radius:50%; transition:background 0.2s ease;
+}
+.vc-btn:hover{background:rgba(255,255,255,0.15);}
+.vc-progress{
+  flex:1; height:4px; background:rgba(255,255,255,0.25); border-radius:4px;
+  cursor:pointer; position:relative; overflow:hidden;
+}
+.vc-progress-fill{
+  height:100%; background:linear-gradient(90deg, var(--pink), var(--gold));
+  border-radius:4px; width:0%; transition:width 0.1s linear;
+}
+.vc-time{font-size:11px; color:rgba(255,255,255,0.7); min-width:36px; text-align:center;}
+
 /* =========================================================
    PAGE 4B — VIRTUAL BOUQUET
 ========================================================= */
@@ -1151,6 +1176,14 @@ body.white-theme .f1-badge{
           Video coming soon 👀<br/><small style="opacity:0.6;">drop files at assets/videos/surprise-1.mp4 to surprise-4.mp4</small>
         </div>
         <button class="video-play-btn" id="video-play-btn">▶</button>
+        <div class="video-controls" id="video-controls">
+          <button class="vc-btn" id="vc-back" title="Rewind 5s">⏪</button>
+          <button class="vc-btn" id="vc-playpause" title="Play/Pause">⏸</button>
+          <button class="vc-btn" id="vc-forward" title="Forward 5s">⏩</button>
+          <div class="vc-progress" id="vc-progress"><div class="vc-progress-fill" id="vc-fill"></div></div>
+          <span class="vc-time" id="vc-time">0:00</span>
+          <button class="vc-btn" id="vc-next" title="Next video">⏭</button>
+        </div>
       </div>
     </div>
   </section>
@@ -1312,9 +1345,9 @@ const LETTERS = [
   { name: 'Jayapradha',  message: 'You are a studious, calm, and kind girl with a really beautiful personality. You may look quiet and simple, but you have a bold side that comes out in every action you take.\n\nYou know what you want, you stand by your decisions, and you never hesitate to do what you feel is right. You are caring and respectful towards everyone, but at the same time, you are strong enough to handle things on your own.\n\nThat perfect combination of a calm heart, kind nature, smart mind, and bold attitude is what makes you truly special.' },
   { name: 'Asif',  message: 'Happy Birthday Jayadharshini! 🥳❤️\n\nAlways stay happy, enjoy your life, and stay blessed! Wishing you lots of happy moments, success, and everything you wish for! ✨🫶' },
   { name: 'Deepa', message: 'Wishing you a very Happy Birthday! 🎂❤️\n\nHope this special day brings you lots of joy, good vibes, and wonderful moments 🥳🥰... May this coming year be filled with great success and happiness for you.\n\nHave a fantastic day ahead! 🎉' },
-  { name: 'Letter 12', message: 'Dear Jayadharsini,\n\nYour message here...\n\nForever grateful.' },
-  { name: 'Letter 13', message: 'Dear Jayadharsini,\n\nYour message here...\n\nYou make life better.' },
-  { name: 'Letter 14', message: 'Dear Jayadharsini,\n\nYour message here...\n\nBest human ever.' },
+  { name: 'Eniya', message: 'Happy Birthday to one of the most unexpected and special friends college gave me! ❤️\n\nHonestly, I never expected that I would meet someone like you in college and end up thinking, "Okay, this is a friendship I definitely want to carry for a lifetime." 😂❤️\n\nI absolutely love your bossy, funny, intelligent, and slightly intimidating-but-in-a-good-way personality 😂. And one thing I\'ve genuinely admired about you from the very beginning is your communication.\n\nI still remember that first-year on-spot speech activity where our English staff gave us a random word and asked us to speak about it for a minute. I still remember watching you deliver that speech and thinking, "How does she even think and speak like this so effortlessly?" 😂 The way you thought on the spot, put your ideas together, and confidently delivered them was something I genuinely admired. Even now, your communication is one of the things I admire the most about you. ❤️\n\nBut honestly, it\'s not just your skills that I love. I love you as a person. And the funniest part is, I NEVER expected you to be this funny! 😂😭 Your way of speaking, the way you deliver even the simplest sentence, your expressions, your random moments… everything makes you so much fun to be around.\n\nSo on your birthday, I just want to say — please stay exactly the way you are. Stay as bossy as you are, as funny as you are, as loving as you are, and as wonderfully crazy as you are. 😂❤️\n\nHappy Birthday once again JD ❤️✨ Keep shining, keep talking like you own the room, keep making everyone laugh, and most importantly… never change who you are. 🫶🏻🎂💗' },
+  { name: 'Hemashri', message: 'Hey jaya ponne, happy birthday!\n\nI really want to share something, I waited for the right time to share I feel it now, in everyone\'s life there are some people who play good support, good guidance roles, even some people feel like a sister too but I saw all things in one person that\'s you, during so many downfall u always be there for me like a family like friend like support, I always wonder how such a person exists and I\'m blessed to have you in my life.\n\nYeah I always want to make people happy, but every time for ur turn I put some extra care and effort only to see the happy smile on ur beautiful face. Every time standing beside you gives me confidence that I will do the things right, thank you for all the wonderful things and moments you have shared with me.\n\nI always wish to have the same moments and care for the rest of my life girl, as I always say I am always there for you at any cost at any time at any circumstances with same care once again happiest birthday jayaaaaaaaa' },
+  { name: 'Dharshini', message: 'Hello Jaya! 😂❤️\n\nI feel very lucky to have a friend like you. Every moment I\'ve spent with you has become a happy memory, and whenever I look back, it honestly makes me emotional. You\'re the person I can share everything with — my positives, negatives, secrets, and somehow you always understand me.\n\nSometimes I even create fake scenarios in my head about my life without you (trust me, it\'s true 😭), and every single time it makes me sad. So yeah, I really hope this friendship continues forever. And if you ever decide to break it… I\'ll kill you. 🙂😂\n\nOkay shit, the topic went somewhere else. 😭\n\nBe happy, Jaya akka. Stay confident and be the same person you are. ❤️\n\nHappy Birthday Jayaaaaa! 🥳🎂✨' },
   { name: 'Letter 15', message: 'Dear Jayadharsini,\n\nYour message here...\n\nHappy birthday, legend! 🎂' },
 ];
 
@@ -1948,11 +1981,53 @@ surpriseVideo.addEventListener('click', () => {
   else{ surpriseVideo.pause(); videoPlayBtn.classList.remove('hidden'); }
 });
 
+// Video controls
+const vcPlayPause = document.getElementById('vc-playpause');
+const vcBack = document.getElementById('vc-back');
+const vcForward = document.getElementById('vc-forward');
+const vcNext = document.getElementById('vc-next');
+const vcProgress = document.getElementById('vc-progress');
+const vcFill = document.getElementById('vc-fill');
+const vcTime = document.getElementById('vc-time');
+
+vcPlayPause.addEventListener('click', () => {
+  if(surpriseVideo.paused){ surpriseVideo.play().catch(()=>{}); vcPlayPause.textContent='⏸'; videoPlayBtn.classList.add('hidden'); }
+  else{ surpriseVideo.pause(); vcPlayPause.textContent='▶'; videoPlayBtn.classList.remove('hidden'); }
+});
+vcBack.addEventListener('click', () => { surpriseVideo.currentTime = Math.max(0, surpriseVideo.currentTime - 5); });
+vcForward.addEventListener('click', () => { surpriseVideo.currentTime = Math.min(surpriseVideo.duration, surpriseVideo.currentTime + 5); });
+vcNext.addEventListener('click', () => {
+  currentVideoIdx++;
+  if(currentVideoIdx >= VIDEO_PLAYLIST.length) currentVideoIdx = 0;
+  loadVideo(currentVideoIdx);
+  vcPlayPause.textContent = '⏸';
+});
+
+// Progress bar update
+surpriseVideo.addEventListener('timeupdate', () => {
+  if(surpriseVideo.duration){
+    const pct = (surpriseVideo.currentTime / surpriseVideo.duration) * 100;
+    vcFill.style.width = pct + '%';
+    const mins = Math.floor(surpriseVideo.currentTime / 60);
+    const secs = Math.floor(surpriseVideo.currentTime % 60);
+    vcTime.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+  }
+});
+
+// Seek by clicking progress bar
+vcProgress.addEventListener('click', (e) => {
+  const rect = vcProgress.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  surpriseVideo.currentTime = pct * surpriseVideo.duration;
+});
+
+surpriseVideo.addEventListener('play', () => { vcPlayPause.textContent = '⏸'; });
+surpriseVideo.addEventListener('pause', () => { vcPlayPause.textContent = '▶'; });
+
 /* =========================================================================
    PAGE 4B : virtual bouquet
 ========================================================================= */
-const bouquetList = document.getElementById('bouquet-list');  
-function buildBouquet(){
+const bouquetList = document.getElementById('bouquet-list');  function buildBouquet(){
   bouquetList.innerHTML = '';
   const b = BOUQUET[0];
   const item = document.createElement('div');
