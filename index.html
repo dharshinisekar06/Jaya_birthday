@@ -280,13 +280,31 @@ button{font-family:var(--font-body); cursor:pointer;}
   position:absolute; top:12px; right:14px; background:none; border:none; color:rgba(255,255,255,0.6); font-size:20px;
 }
 .video-frame{
-  width:100%; aspect-ratio:9/14; max-height:420px; border-radius:16px; overflow:hidden; position:relative;
+  width:100%; aspect-ratio:9/16; max-height:70vh; border-radius:16px; overflow:hidden; position:relative;
   background:linear-gradient(160deg,#241030,#12081c); border:6px solid #241224;
   box-shadow: 0 0 0 2px rgba(255,47,142,0.35), 0 20px 50px rgba(0,0,0,0.5);
   display:flex; align-items:center; justify-content:center;
+  max-width:400px; margin:0 auto;
+}
+@media(max-width:640px){
+  .video-frame{
+    max-height:55vh; max-width:85vw; border-width:4px; border-radius:12px;
+    aspect-ratio:9/16;
+  }
 }
 .video-frame video{width:100%; height:100%; object-fit:cover; display:block;}
 .video-placeholder{color:rgba(255,255,255,0.55); font-size:14px; padding:20px;}
+.video-play-btn{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:70px; height:70px; border-radius:50%; border:none;
+  background:rgba(255,47,142,0.85); color:#fff; font-size:28px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 8px 30px rgba(255,47,142,0.5);
+  cursor:pointer; transition:transform 0.2s ease, opacity 0.3s ease;
+  padding-left:4px;
+}
+.video-play-btn:hover{transform:translate(-50%,-50%) scale(1.1);}
+.video-play-btn.hidden{opacity:0; pointer-events:none;}
 
 /* =========================================================
    PAGE 4B — VIRTUAL BOUQUET
@@ -530,11 +548,23 @@ body.memories-theme #audio-toggle{background:rgba(26,0,0,0.8); border-color:rgba
 /* Mobile: 2-column grid fallback */
 @media(max-width:767px){
   .scrapbook{
-    display:grid !important; grid-template-columns:repeat(2, 1fr); gap:16px;
-    min-height:auto; padding:10px;
+    display:grid !important; grid-template-columns:repeat(2, 1fr); gap:10px;
+    min-height:auto !important; padding:6px;
   }
-  .scrap-polaroid{position:relative !important; top:auto !important; left:auto !important; right:auto !important;}
-  .scrap-deco{display:none;}
+  .scrap-polaroid{
+    position:relative !important; top:auto !important; left:auto !important; right:auto !important;
+    width:100% !important; transform:rotate(0deg) !important;
+    opacity:1 !important; animation:none !important;
+    padding:5px 5px 18px;
+  }
+  .scrap-polaroid .s-photo{aspect-ratio:1/1;}
+  .scrap-polaroid .s-caption{font-size:10px; margin-top:5px;}
+  .scrap-tape{width:30px; height:10px;}
+  .scrap-pin{width:12px; height:12px;}
+  .scrap-deco{display:none !important;}
+  #sec-memories .inner{padding:0 8px !important; max-width:100% !important;}
+  #sec-memories .headline{font-size:22px !important;}
+  #sec-memories .subline{font-size:13px !important;}
 }
 
 /* =========================================================
@@ -1115,13 +1145,12 @@ body.white-theme .f1-badge{
       <p class="subline">Let's do something random.</p>
 
       <div class="video-frame" style="margin-top:6px;">
-        <video controls playsinline onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <source src="assets/videos/surprise.mp4" type="video/mp4">
-        </video>
-        <div class="video-placeholder" style="display:none; flex-direction:column; align-items:center; gap:8px;">
+        <video id="surprise-video" playsinline preload="auto" src="assets/videos/surprise-1.mp4" style="width:100%; height:100%; object-fit:cover; display:block;"></video>
+        <div class="video-placeholder" id="video-placeholder" style="display:none; flex-direction:column; align-items:center; gap:8px;">
           <span style="font-size:26px;">🎬</span>
-          Video coming soon 👀<br/><small style="opacity:0.6;">drop a file at assets/videos/surprise.mp4</small>
+          Video coming soon 👀<br/><small style="opacity:0.6;">drop files at assets/videos/surprise-1.mp4 to surprise-4.mp4</small>
         </div>
+        <button class="video-play-btn" id="video-play-btn">▶</button>
       </div>
     </div>
   </section>
@@ -1272,17 +1301,17 @@ const MEMORIES = [
 ];
 
 const LETTERS = [
-  { name: 'Letter 1',  message: 'Dear Jayadharsini,\n\nYour message here...\n\nHappy birthday!' },
-  { name: 'Letter 2',  message: 'Dear Jayadharsini,\n\nYour message here...\n\nWith love ❤️' },
-  { name: 'Letter 3',  message: 'Dear Jayadharsini,\n\nYour message here...\n\nForever yours.' },
-  { name: 'Letter 4',  message: 'Dear Jayadharsini,\n\nYour message here...\n\nYou deserve the world.' },
-  { name: 'Letter 5',  message: 'Dear Jayadharsini,\n\nYour message here...\n\nAlways and forever. 💗' },
-  { name: 'Letter 6',  message: 'Dear Jayadharsini,\n\nYour message here...\n\nKeep shining!' },
-  { name: 'Letter 7',  message: 'Dear Jayadharsini,\n\nYour message here...\n\nYou are loved.' },
-  { name: 'Letter 8',  message: 'Dear Jayadharsini,\n\nYour message here...\n\nNever change. 🌟' },
-  { name: 'Letter 9',  message: 'Dear Jayadharsini,\n\nYour message here...\n\nProud of you!' },
-  { name: 'Letter 10', message: 'Dear Jayadharsini,\n\nYour message here...\n\nMy person. ❤️' },
-  { name: 'Letter 11', message: 'Dear Jayadharsini,\n\nYour message here...\n\nTo the moon and back.' },
+  { name: 'Ishwari',  message: 'Sometimes namma friendship ah describe panna try pannumbodhu, enakku words eh kedaikadhu di. Because it\'s not just about the happy moments or the countless memories we have, it\'s also about those days when one of us wasn\'t okay and the other just stayed.\n\nNo matter how many times life changes around us, I just hope there\'s always a little part of our lives where it\'s still \'us\'. 🥹❤️\n\n~IshwariRajmohan' },
+  { name: 'Kaviya',  message: 'Happy birthdayyy J! 🎀🎂💗\n\nHave a great year ahead and all the best for your future! You\'re such a carefree and happy person, and I really like how you can talk to everyone so freely and make people feel comfortable.\n\nNever change that about yourself! 🫶🏻✨' },
+  { name: 'Darshan',  message: 'Throughout Heaven and Earth, You alone are the honored one' },
+  { name: 'Jaya Bharathi',  message: 'Dear Jaya,\n\nThank you for always helping me and being there whenever I need you. I really love how you explain everything, talk to me, and make every moment fun.\n\nYou are such a jolly friend, and I\'ll always be grateful for you. I even love annoying you and getting on your nerves! 😂\n\nThank you for being my friend. Stay the same forever!\n\nWith love,\nJaya Bharathi ❤️' },
+  { name: 'Paraneshwari',  message: 'Happy Birthday, Jaya!\n\nIt\'s been so lovely getting to know you and I\'m really glad our paths crossed.\n\nWishing you an amazing birthday and an even more amazing year ahead! ❤️' },
+  { name: 'Venisha',  message: 'Hello Jayadharshini,\n\nVenisha here. Although we have not spent much time together, the few moments I have spoken with you is enough for me to know that you are very sweet. ☺️\n\nBest wishes for your future.\n\nHappy Birthday ✨🥳' },
+  { name: 'Gunapriya Akka',  message: 'Happy Birthday, Jaya! ❤️✨\n\nMay your life always be filled with happiness, peace, success, and countless beautiful memories. May everything you wish for slowly turn into reality. Always keep that beautiful smile and kind heart! 🥰\n\nStay happy, stay blessed, and keep shining always. Wishing you the most wonderful birthday and a beautiful year ahead! 🎂💫❤️' },
+  { name: 'Surya',  message: 'Happy Birthday, Jaya! 🎉🎂✨\n\nWishing you loads of happiness, success, good health, and amazing memories! 💫 And ofc, it\'ll be a happy day because I\'m there for a part of it 😂\n\nYou\'re literally the glue holding our group together—thanks for managing all our Tom & Jerry fights 🤝😂 (though sometimes you support her for no reason 😭).\n\nHave the best day, Jayadharsini! ❤️\n\nAnd yes, treat mukkiyam… ava illa naalum paravailla, Tuesday biriyani dhan 😌🍗😂\n\nHappy Birthday once again! �💫' },
+  { name: 'Jayapradha',  message: 'You are a studious, calm, and kind girl with a really beautiful personality. You may look quiet and simple, but you have a bold side that comes out in every action you take.\n\nYou know what you want, you stand by your decisions, and you never hesitate to do what you feel is right. You are caring and respectful towards everyone, but at the same time, you are strong enough to handle things on your own.\n\nThat perfect combination of a calm heart, kind nature, smart mind, and bold attitude is what makes you truly special.' },
+  { name: 'Asif',  message: 'Happy Birthday Jayadharshini! 🥳❤️\n\nAlways stay happy, enjoy your life, and stay blessed! Wishing you lots of happy moments, success, and everything you wish for! ✨🫶' },
+  { name: 'Deepa', message: 'Wishing you a very Happy Birthday! 🎂❤️\n\nHope this special day brings you lots of joy, good vibes, and wonderful moments 🥳🥰... May this coming year be filled with great success and happiness for you.\n\nHave a fantastic day ahead! 🎉' },
   { name: 'Letter 12', message: 'Dear Jayadharsini,\n\nYour message here...\n\nForever grateful.' },
   { name: 'Letter 13', message: 'Dear Jayadharsini,\n\nYour message here...\n\nYou make life better.' },
   { name: 'Letter 14', message: 'Dear Jayadharsini,\n\nYour message here...\n\nBest human ever.' },
@@ -1330,17 +1359,28 @@ class AudioManager{
     if(!this.cache[name]){
       const a = new Audio();
       a.src = AUDIO_FILES[name];
-      a.preload = 'none';
+      a.preload = 'auto';
       a.onerror = () => { /* missing file: fail silently, never crash */ };
       this.cache[name] = a;
     }
     return this.cache[name];
+  }
+  // Preload critical sounds so they play instantly
+  preloadAll(){
+    ['click','pageTransition','candleBlow','confetti','background'].forEach(n => this._get(n));
   }
   play(name, opts = {}){
     if(this.muted) return;
     const a = this._get(name);
     if(!a) return;
     try{
+      // For short SFX like click, clone the audio for instant playback
+      if(name === 'click' || name === 'pageTransition' || name === 'confetti'){
+        const clone = a.cloneNode();
+        clone.volume = opts.volume !== undefined ? opts.volume : 0.6;
+        clone.play().catch(()=>{});
+        return;
+      }
       a.loop = !!opts.loop;
       a.volume = opts.volume !== undefined ? opts.volume : 0.6;
       a.currentTime = 0;
@@ -1367,8 +1407,16 @@ class AudioManager{
       try{ this.currentBg.volume = this.muted ? 0 : volume; }catch(e){}
       return;
     }
+    // If same track but paused (e.g. after stopBg during video), just resume it
+    if(this.currentBg && newTrack && this.currentBg.src === newTrack.src && this.currentBg.paused){
+      try{
+        this.currentBg.volume = this.muted ? 0 : volume;
+        this.currentBg.play().catch(()=>{});
+      }catch(e){}
+      return;
+    }
     const old = this.currentBg;
-    if(old){
+    if(old && !old.paused){
       let v = old.volume;
       const step = () => {
         v = Math.max(0, v - 0.05);
@@ -1389,6 +1437,7 @@ class AudioManager{
   }
 }
 const audio = new AudioManager();
+audio.preloadAll();
 
 document.getElementById('audio-toggle').addEventListener('click', (e) => {
   const muted = audio.toggleMute();
@@ -1616,8 +1665,11 @@ function onEnterSection(id){
     document.body.classList.remove('memories-theme');
   }
   if(id === 'sec-welcome') audio.fadeToBg('background', 0.28);
-  if(id === 'sec-memories') audio.fadeToBg('background', 0.28);
-  if(id === 'sec-letters') audio.fadeToBg('background', 0.28);
+  if(id === 'sec-surprises') startVideoPlayback();
+  if(id !== 'sec-surprises' && id !== 'sec-headphone' && id !== 'sec-check'){
+    surpriseVideo.pause();
+    audio.fadeToBg('background', 0.28);
+  }
   if(id === 'sec-final') runFinalSequence();
 }
 
@@ -1836,9 +1888,70 @@ document.getElementById('modal-close').addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) closeModal(); });
 
 /* =========================================================================
+   PAGE 4 : video playlist (plays 4 videos continuously)
+========================================================================= */
+const VIDEO_PLAYLIST = [
+  'assets/videos/surprise-1.mp4',
+  'assets/videos/surprise-2.mp4',
+  'assets/videos/surprise-3.mp4',
+  'assets/videos/surprise-4.mp4',
+];
+const surpriseVideo = document.getElementById('surprise-video');
+const videoPlayBtn = document.getElementById('video-play-btn');
+let currentVideoIdx = 0;
+
+function loadVideo(idx){
+  if(idx >= VIDEO_PLAYLIST.length) idx = 0; // loop back to first
+  currentVideoIdx = idx;
+  surpriseVideo.src = VIDEO_PLAYLIST[idx];
+  surpriseVideo.load();
+  surpriseVideo.play().catch(()=>{});
+}
+
+// When a video ends, play the next one
+surpriseVideo.addEventListener('ended', () => {
+  currentVideoIdx++;
+  if(currentVideoIdx >= VIDEO_PLAYLIST.length) currentVideoIdx = 0;
+  loadVideo(currentVideoIdx);
+});
+
+// Handle error — if a video file doesn't exist, skip to next
+surpriseVideo.addEventListener('error', () => {
+  if(currentVideoIdx < VIDEO_PLAYLIST.length - 1){
+    currentVideoIdx++;
+    loadVideo(currentVideoIdx);
+  } else {
+    // All videos failed, show placeholder
+    surpriseVideo.style.display = 'none';
+    document.getElementById('video-placeholder').style.display = 'flex';
+    videoPlayBtn.classList.add('hidden');
+  }
+});
+
+// Play button starts the playlist
+videoPlayBtn.addEventListener('click', () => {
+  videoPlayBtn.classList.add('hidden');
+  audio.stopBg(); // pause bg music during video
+  loadVideo(0);
+});
+
+// Auto-play when entering the surprises page
+function startVideoPlayback(){
+  videoPlayBtn.classList.add('hidden');
+  audio.stopBg();
+  loadVideo(0);
+}
+
+// Also allow clicking the video to pause/play
+surpriseVideo.addEventListener('click', () => {
+  if(surpriseVideo.paused){ surpriseVideo.play().catch(()=>{}); videoPlayBtn.classList.add('hidden'); }
+  else{ surpriseVideo.pause(); videoPlayBtn.classList.remove('hidden'); }
+});
+
+/* =========================================================================
    PAGE 4B : virtual bouquet
 ========================================================================= */
-const bouquetList = document.getElementById('bouquet-list');
+const bouquetList = document.getElementById('bouquet-list');  
 function buildBouquet(){
   bouquetList.innerHTML = '';
   const b = BOUQUET[0];
